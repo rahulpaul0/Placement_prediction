@@ -105,10 +105,19 @@
             xhr.open('POST','/predict',true);
             document.getElementById("prediction").innerHTML="Wait! Predicting Placement...";
 
-            xhr.onreadystatechange = function(){
-                if(xhr.readyState == XMLHttpRequest.DONE){
-                    document.getElementById("prediction").innerHTML="Probability of getting placed: "+ xhr.responseText +"%";
-                }
+            xhr.onreadystatechange = function(){ 
+                if(xhr.readyState == XMLHttpRequest.DONE){ 
+                    let response = JSON.parse(xhr.responseText);
+                    let output = `<strong>Probability of getting placed: ${response.probability}%</strong><br><br>`;
+                    if (response.suggestions.length > 0) {
+                        output += "<strong>Suggestions to improve:</strong><br>";
+                        response.suggestions.forEach(function(s){
+                        output += `${s}`;
+                        });
+                        output += "<br>";
+                    }
+                    document.getElementById("prediction").innerHTML = output;
+                } 
             }
 
             xhr.onload=function(){};
